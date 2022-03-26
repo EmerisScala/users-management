@@ -1,0 +1,290 @@
+swagger: '2.0'
+info:
+  description: 'API to manage users and their sessions.'
+  version: 0.0.1
+  title: API User Management
+  contact:
+    email: emerisortiz@gmail.com
+host: localhost
+basePath: /user-management/v1
+schemes:
+  - http
+paths:
+  /user:
+    get:
+      tags:
+        - users
+      summary: Get all users registered.
+      description: 'Get all users registered.'
+      operationId: getUsers
+      produces:
+        - application/json
+      parameters:
+        - name: x-token
+          in: header
+          description: 'The header is a token that validate if the current user is logged.'
+          default: 'eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp'
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/UserGETResponse200'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Response401'
+        '404':
+          description: Not found
+          schema:
+            $ref: '#/definitions/Response404'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Response500'
+    post:
+      tags:
+        - users
+      description: Register a new user.
+      summary: Register a new user.
+      operationId: createUser
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Create User Input
+          required: true
+          schema:
+            $ref: '#/definitions/UserPOST'
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/UserPOSTResponse200'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Response400'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Response500'
+          
+  /user/login:
+    post:
+      tags:
+        - authentication
+      summary: Logs user into the system
+      description: 'Logs user into the system'
+      operationId: loginUser
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Login User Input
+          required: true
+          schema:
+            $ref: '#/definitions/UserLoginPOST'
+
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/LoginPOSTResponse200'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Response400'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Response500'
+          
+  /user/logout:
+    delete:
+      tags:
+        - authentication
+      summary: Logs out current logged in user session
+      description: 'Logs out current logged in user session'
+      operationId: logoutUser
+      produces:
+        - application/json
+      parameters:
+        - name: x-token
+          in: header
+          description: 'The header is a token that validate if the current user is logged.'
+          default: 'eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp'
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/UserPOSTResponse200'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Response401'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Response500'
+
+definitions:
+      
+  UserLoginPOST:
+    type: object
+    required:
+      - password
+    properties:
+      username:
+        description: | 
+          'The username of the user for login' 
+          `This property is not required if a Phone Number is given.`
+        type: string
+        example: 'EmerisK36'
+      phoneNumber:
+        description: |
+          'Phone number of the user for login'
+          `This property is not required if a Username is given.`
+        
+        type: string
+        example: '7713869966'
+      password:
+        description: 'The password for login in clear text'
+        type: string
+        example: 'root123'
+  
+  UserPOST:
+    type: object
+    required:
+      - name
+      - lastname
+      - phoneNumber
+      - username
+      - password
+    properties:
+      name: 
+        type: string
+        description: 'Name of the user'
+        example: Jose Emeris
+      lastname:
+        type: string
+        description: 'Lastname of the user'
+        example: Hernandez
+      secondLastName:
+        type: string
+        description: 'Second Lastname of the user'
+        example: Ortiz
+      phoneNumber:
+        type: string
+        description: 'Phone number of the user'
+        example: 7713869966
+      email:
+        type: string
+        description: 'Email of the user'
+        example: emerishdez@gmail.com
+      username:
+        type: string
+        description: 'Username of the user'
+        example: EmerisK36
+      password:
+        type: string
+        description: 'Password of the user'
+        example: root1234
+        
+  UserPOSTResponse200:
+    type: object
+    properties:
+      message: 
+        type: string
+        description: 'Operation message'
+        example: Successful Operation
+        
+  UserGETResponse200:
+    type: array
+    items:
+      $ref: '#/definitions/UserPOST'
+      
+  LoginPOSTResponse200:
+    type: object
+    properties:
+      user: 
+        $ref: '#/definitions/UserPOST'
+      token:
+        type: string
+        description: 'Autentication token'
+        example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp'
+  
+  Response400:
+    type: object
+    properties:
+      code:
+        type: string
+        description: 'Error Code'
+        example: 40001
+      message:
+        type: string
+        description: 'Message of the error'
+        example: The username is incorrect
+      details:
+        type: string
+        description: 'Description of the error message'
+        example: The username cannot accept special character symbols
+        
+  Response401:
+    type: object
+    properties:
+      code:
+        type: string
+        description: 'Error Code'
+        example: 40101
+      message:
+        type: string
+        description: 'Message of the error'
+        example: Unautorized user
+      details:
+        type: string
+        description: 'Description of the error message'
+        example: The token is not valid
+        
+  Response404:
+    type: object
+    properties:
+      code:
+        type: string
+        description: 'Error Code'
+        example: 40401
+      message:
+        type: string
+        description: 'Message of the error'
+        example: The user was not found
+      details:
+        type: string
+        description: 'Description of the error message'
+        example: The user you are searching was not found
+        
+  Response500:
+    type: object
+    properties:
+      code:
+        type: string
+        description: 'Error Code'
+        example: 50001
+      message:
+        type: string
+        description: 'Message of the error'
+        example: Internal Server Error
+      details:
+        type: string
+        description: 'Description of the error message'
+        example: An internal server error has occurred
+        
+      
