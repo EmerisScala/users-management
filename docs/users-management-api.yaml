@@ -2,11 +2,11 @@ swagger: '2.0'
 info:
   description: 'API to manage users and their sessions.'
   version: 0.0.1
-  title: API User Management
+  title: API Users Management
   contact:
     email: emerisortiz@gmail.com
 host: localhost
-basePath: /user-management/v1
+basePath: /users-management/v1
 schemes:
   - http
 paths:
