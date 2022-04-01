@@ -20,7 +20,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: x-token
+        - name: token
           in: header
           description: 'The header is a token that validate if the current user is logged.'
           default: 'eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp'
@@ -117,7 +117,7 @@ paths:
       produces:
         - application/json
       parameters:
-        - name: x-token
+        - name: token
           in: header
           description: 'The header is a token that validate if the current user is logged.'
           default: 'eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp'
