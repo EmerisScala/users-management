@@ -78,7 +78,19 @@ const createUser = async (user) => {
       .then(async () => {
         if (userValidation.isValidUser) {
           const newUser = new UserModel(user);
-          return await newUser.save();
+          const userCreation = UserModel.findOne({ username: newUser.username }).then(async (result) => {
+            if(!result){
+              return await newUser.save();
+            } else {
+              return {
+                code: 400,
+                details: "User already exists.",
+              };
+            }
+          })
+
+          return userCreation
+          
         } else {
           return {
             code: 400,
